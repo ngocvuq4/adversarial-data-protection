@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import torch
 import torch.nn as nn
+from tqdm.auto import tqdm
 
 
 def _freeze(model):
@@ -32,6 +33,7 @@ def generate_unlearnable_noise(
     pgd_alpha=None,
     inner_epochs=5,
     device="cpu",
+    show_progress=True,
 ):
     """Generate class-wise error-minimizing noise for CIFAR-10."""
     if pgd_alpha is None:
@@ -48,7 +50,11 @@ def generate_unlearnable_noise(
     )
     criterion = nn.CrossEntropyLoss()
 
-    for _ in range(pgd_steps):
+    pgd_iterator = range(pgd_steps)
+    if show_progress:
+        pgd_iterator = tqdm(pgd_iterator, desc="PGD noise steps", leave=False)
+
+    for pgd_step in pgd_iterator:
         previous = _freeze(model)
         for x, y in train_loader:
             x, y = x.to(device), y.to(device)
@@ -75,7 +81,14 @@ def generate_unlearnable_noise(
         _restore(model, previous)
 
         model.train()
-        for _inner in range(inner_epochs):
+        inner_iterator = range(inner_epochs)
+        if show_progress:
+            inner_iterator = tqdm(
+                inner_iterator,
+                desc=f"Inner train {pgd_step + 1}/{pgd_steps}",
+                leave=False,
+            )
+        for _inner in inner_iterator:
             for x, y in train_loader:
                 x, y = x.to(device), y.to(device)
                 x_noisy = apply_noise(x, y, noise_dict)
