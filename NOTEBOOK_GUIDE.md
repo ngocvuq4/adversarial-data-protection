@@ -68,6 +68,8 @@ Notebook thuc nghiem ban dau, dung subset 5000. Ket qua chi nen xem la prelimina
 - `colab_concept_poisoning_caltech101_proxy_experiment.ipynb`
   - Notebook chinh cho CLIP-space Concept Poisoning Proxy.
   - Day la proxy CLIP-space, khong fine-tune generative model.
+  - Mac dinh chay `BENCHMARK_PRESET = "smoke"`: subset 100, epsilon `0.03`, PGD steps `5` de kiem tra code truoc.
+  - Khi smoke run on dinh, doi `BENCHMARK_PRESET = "benchmark"`: subset 500, epsilon `0.03` va `0.05`, PGD steps `10`.
   - Benchmark dung muc tieu CLIP-space: target cosine before/after/gain, target rank before/after, PSNR, SSIM, L-infinity.
 - `colab_concept_poisoning_caltech101_experiment.ipynb`
 - `colab_concept_poisoning_experiment.ipynb`
