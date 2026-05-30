@@ -17,7 +17,7 @@ __all__ = [
 
 def __getattr__(name):
     if name in {"get_text_embedding", "load_clip_model", "poison_images"}:
-        from . import nightshade
+        from . import concept_poisoning
 
-        return getattr(nightshade, name)
+        return getattr(concept_poisoning, name)
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

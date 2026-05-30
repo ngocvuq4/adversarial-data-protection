@@ -65,8 +65,13 @@ Notebook thuc nghiem ban dau, dung subset 5000. Ket qua chi nen xem la prelimina
 
 ### Concept Poisoning
 
+- `colab_concept_poisoning_caltech101_proxy_experiment.ipynb`
+  - Notebook chinh cho CLIP-space Concept Poisoning Proxy.
+  - Day la proxy CLIP-space, khong fine-tune generative model.
+  - Benchmark dung muc tieu CLIP-space: target cosine before/after/gain, target rank before/after, PSNR, SSIM, L-infinity.
 - `colab_concept_poisoning_caltech101_experiment.ipynb`
 - `colab_concept_poisoning_experiment.ipynb`
+  - Notebook cu / exploratory, khong dung lam ket qua chinh neu chua validate lai.
 
 Hai nhom nay chua nen dua vao bang ket qua chinh neu chua chay va validate day du nhu Unlearnable.
 
