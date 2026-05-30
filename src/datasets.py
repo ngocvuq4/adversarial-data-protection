@@ -100,6 +100,7 @@ def get_caltech101(
     train_ratio=0.8,
     seed=42,
     download=True,
+    num_workers=2,
 ):
     """Return Caltech-101 train/test loaders resized to img_size.
 
@@ -131,14 +132,14 @@ def get_caltech101(
         train_set,
         batch_size=batch_size,
         shuffle=True,
-        num_workers=2,
+        num_workers=num_workers,
         pin_memory=True,
     )
     test_loader = DataLoader(
         test_set,
         batch_size=batch_size,
         shuffle=False,
-        num_workers=2,
+        num_workers=num_workers,
         pin_memory=True,
     )
     num_classes = len(dataset.dataset.classes) if isinstance(dataset, Subset) else len(dataset.classes)
