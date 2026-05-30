@@ -30,9 +30,9 @@ CLIP_MEAN = torch.tensor([0.48145466, 0.4578275, 0.40821073]).view(1, 3, 1, 1)
 CLIP_STD = torch.tensor([0.26862954, 0.26130258, 0.27577711]).view(1, 3, 1, 1)
 
 
-def load_clip_model(model_name="ViT-B/32", device="cpu"):
+def load_clip_model(model_name="ViT-B/32", device="cpu", download_root=None):
     """Load OpenAI CLIP and freeze it for PGD generation."""
-    model, preprocess = clip.load(model_name, device=device)
+    model, preprocess = clip.load(model_name, device=device, download_root=download_root)
     model.eval()
     for param in model.parameters():
         param.requires_grad = False
