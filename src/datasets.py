@@ -14,6 +14,8 @@ import torchvision.transforms as T
 from torchvision.datasets import CIFAR10, ImageFolder, LFWPairs
 from torchvision.datasets.utils import download_url, extract_archive
 
+IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".ppm", ".bmp", ".pgm", ".tif", ".tiff", ".webp"}
+
 
 def get_cifar10(root="./data", subset_size=5000, batch_size=128):
     """Return CIFAR-10 train/test loaders with images shaped (3, 32, 32)."""
@@ -61,7 +63,13 @@ def _prepare_caltech101(root):
     """Download/extract Caltech-101 into an ImageFolder-compatible directory."""
     root = Path(root)
     dataset_dir = root / "caltech101" / "caltech-101" / "101_ObjectCategories"
-    if dataset_dir.exists():
+
+    def valid_image_count(path):
+        if not path.exists():
+            return 0
+        return sum(1 for item in path.rglob("*") if item.is_file() and item.suffix.lower() in IMAGE_EXTENSIONS)
+
+    if valid_image_count(dataset_dir) > 0:
         return dataset_dir
 
     archive_dir = root / "caltech101"
@@ -77,10 +85,10 @@ def _prepare_caltech101(root):
     extract_archive(str(zip_path), str(archive_dir))
 
     inner_tar = archive_dir / "caltech-101" / "101_ObjectCategories.tar.gz"
-    if inner_tar.exists() and not dataset_dir.exists():
+    if inner_tar.exists() and valid_image_count(dataset_dir) == 0:
         extract_archive(str(inner_tar), str(inner_tar.parent))
-    if not dataset_dir.exists():
-        raise FileNotFoundError(f"Caltech-101 image directory not found: {dataset_dir}")
+    if valid_image_count(dataset_dir) == 0:
+        raise FileNotFoundError(f"Caltech-101 image directory not found or contains no images: {dataset_dir}")
     return dataset_dir
 
 
