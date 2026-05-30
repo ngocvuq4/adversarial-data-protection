@@ -49,8 +49,19 @@ Notebook thuc nghiem ban dau, dung subset 5000. Ket qua chi nen xem la prelimina
 ### Cloaking
 
 - `colab_cloaking_caltech101_experiment.ipynb`
+  - Notebook ablation chinh cho Cloaking.
+  - Chay subset 500 voi epsilon `0.03` va `0.05` de so sanh trade-off feature shift / chat luong anh.
+  - Benchmark dung muc tieu feature-space: cosine(original, protected), target cosine gain, feature L2 shift, PSNR, SSIM, L-infinity.
+  - Khong train classifier victim vi classification accuracy khong phai metric chinh cua Cloaking.
+- `colab_cloaking_caltech101_full_final_experiment.ipynb`
+  - Notebook final cho Cloaking.
+  - Mac dinh chay full Caltech-101 voi epsilon `0.03`, PGD steps `20`.
+  - Neu Colab khong du thoi gian, doi `SUBSET_SIZE = 2000` trong cell config.
+  - Benchmark dung muc tieu feature-space: cosine(original, protected), target cosine gain, feature L2 shift, PSNR, SSIM, L-infinity.
+  - Khong train classifier victim vi classification accuracy khong phai metric chinh cua Cloaking.
 - `colab_cloaking_cifar100_experiment.ipynb`
 - `colab_cloaking_experiment.ipynb`
+  - Notebook cu / exploratory, khong dung lam ket qua chinh.
 
 ### Concept Poisoning
 
