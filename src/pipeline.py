@@ -2,7 +2,7 @@
 
 Two modes are supported:
 - resize: default for fast Colab T4 demos. Resize image to 224x224, protect,
-  then resize the protected output back to the original image size.
+  then upsample only the perturbation and add it to the original image size.
 - patch: advanced mode. Keep image resolution, split into 224x224 patches,
   protect patch batches, stitch them back, and crop to the original size.
 
@@ -90,15 +90,29 @@ def protect_resize(
     device="cpu",
     **technique_kwargs,
 ):
-    """Protect by resizing to size, applying technique_fn, then restoring size."""
-    original_size = pil_img.size
-    x = image_to_tensor(pil_img, size=size).to(device)
-    x_protected = technique_fn(x, **technique_kwargs).detach().cpu().clamp(0.0, 1.0)
-    output_img = tensor_to_image(x_protected, original_size=original_size)
-    del x
+    """Protect via low-res PGD delta, then apply that delta to the original image.
+
+    Returning the protected 224x224 image resized back to the original resolution
+    makes the output blurry. Instead, only the perturbation is upsampled.
+    """
+    x_small = image_to_tensor(pil_img, size=size).to(device)
+    x_full = image_to_tensor_no_resize(pil_img)
+    x_protected_small = technique_fn(x_small, **technique_kwargs).detach().cpu().clamp(
+        0.0, 1.0
+    )
+    delta_small = x_protected_small - x_small.detach().cpu()
+    delta_full = torch.nn.functional.interpolate(
+        delta_small,
+        size=x_full.shape[-2:],
+        mode="bilinear",
+        align_corners=False,
+    )
+    x_protected_full = torch.clamp(x_full + delta_full, 0.0, 1.0)
+    output_img = tensor_to_image(x_protected_full)
+    del x_small
     if torch.cuda.is_available():
         torch.cuda.empty_cache()
-    return output_img, x_protected
+    return output_img, x_protected_full
 
 
 def protect_patches(
