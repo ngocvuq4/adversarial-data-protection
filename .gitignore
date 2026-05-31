@@ -13,6 +13,7 @@ env/
 
 data/
 results/
+outputs/demo_ui/
 
 *.log
 *.tmp
